@@ -9,6 +9,12 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response, next) => {
   const inputData = request.body
+
+  if (!Object.hasOwn(inputData, 'title') || !Object.hasOwn(inputData, 'url')) {
+    response.status(400).end()
+    return
+  }
+
   inputData.likes = inputData.likes || 0
 
   const blog = new Blog(inputData)

@@ -58,6 +58,32 @@ test('if the likes property is missing, it defaults to 0', async () => {
   expect(savedBlog.likes).toBe(0)
 })
 
+test('if the title or url property is missing, respond with 400', async () => {
+  const noTitleBlog = {
+    author: 'newAuthor',
+    url: 'newUrl',
+    likes: 0
+  }
+  const noUrlBlog = {
+    title: 'newBlog',
+    author: 'newAuthor',
+    likes: 0
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(noTitleBlog)
+    .expect(400)
+
+  await api
+    .post('/api/blogs')
+    .send(noUrlBlog)
+    .expect(400)
+
+  const blogs = await helper.blogsInDb()
+  expect(blogs).toHaveLength(helper.initialBlogs.length)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
