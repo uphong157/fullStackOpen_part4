@@ -24,64 +24,66 @@ test('blog post has id property', async () => {
   expect(response.body[0].id).toBeDefined()
 })
 
-test('a blog can be added', async () => {
-  const newBlog = {
-    title: 'newBlog',
-    author: 'newAuthor',
-    url: 'newUrl',
-    likes: 0
-  }
+describe('when adding a new blog', () => {
+  test('it succeeds with valid data', async () => {
+    const newBlog = {
+      title: 'newBlog',
+      author: 'newAuthor',
+      url: 'newUrl',
+      likes: 0
+    }
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
 
-  const blogs = await helper.blogsInDb()
-  expect(blogs).toHaveLength(helper.initialBlogs.length + 1)
-})
+    const blogs = await helper.blogsInDb()
+    expect(blogs).toHaveLength(helper.initialBlogs.length + 1)
+  })
 
-test('if the likes property is missing, it defaults to 0', async () => {
-  const newBlog = {
-    title: 'newBlog',
-    author: 'newAuthor',
-    url: 'newUrl'
-  }
+  test('if the likes property is missing, it defaults to 0', async () => {
+    const newBlog = {
+      title: 'newBlog',
+      author: 'newAuthor',
+      url: 'newUrl'
+    }
 
-  const result = await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
+    const result = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
 
-  const blogs = await helper.blogsInDb()
-  const savedBlog = blogs.find(blog => blog.id === result.body.id)
-  expect(savedBlog.likes).toBe(0)
-})
+    const blogs = await helper.blogsInDb()
+    const savedBlog = blogs.find(blog => blog.id === result.body.id)
+    expect(savedBlog.likes).toBe(0)
+  })
 
-test('if the title or url property is missing, respond with 400', async () => {
-  const noTitleBlog = {
-    author: 'newAuthor',
-    url: 'newUrl',
-    likes: 0
-  }
-  const noUrlBlog = {
-    title: 'newBlog',
-    author: 'newAuthor',
-    likes: 0
-  }
+  test('if the title or url property is missing, respond with 400', async () => {
+    const noTitleBlog = {
+      author: 'newAuthor',
+      url: 'newUrl',
+      likes: 0
+    }
+    const noUrlBlog = {
+      title: 'newBlog',
+      author: 'newAuthor',
+      likes: 0
+    }
 
-  await api
-    .post('/api/blogs')
-    .send(noTitleBlog)
-    .expect(400)
+    await api
+      .post('/api/blogs')
+      .send(noTitleBlog)
+      .expect(400)
 
-  await api
-    .post('/api/blogs')
-    .send(noUrlBlog)
-    .expect(400)
+    await api
+      .post('/api/blogs')
+      .send(noUrlBlog)
+      .expect(400)
 
-  const blogs = await helper.blogsInDb()
-  expect(blogs).toHaveLength(helper.initialBlogs.length)
+    const blogs = await helper.blogsInDb()
+    expect(blogs).toHaveLength(helper.initialBlogs.length)
+  })
 })
 
 afterAll(async () => {
