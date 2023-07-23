@@ -1,6 +1,6 @@
 const supertest = require('supertest')
 const app = require('../app')
-const { default: mongoose } = require('mongoose')
+const mongoose = require('mongoose')
 
 const api = supertest(app)
 

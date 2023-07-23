@@ -11,6 +11,12 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
 
+  const isBadPwd = pwd => {
+    if (pwd.length <= 3) return true
+    return false
+  }
+  if (isBadPwd(password)) return response.status(400).json({ error: 'invalid password' })
+
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
 
